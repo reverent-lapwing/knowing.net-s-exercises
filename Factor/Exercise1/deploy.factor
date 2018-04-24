@@ -7,7 +7,7 @@ H{
     { deploy-unicode? f }
     { deploy-console? t }
     { deploy-io 3 }
-    { deploy-reflection 1 }
+    { deploy-reflection 6 }
     { deploy-ui? f }
     { deploy-word-defs? f }
     { deploy-threads? t }
