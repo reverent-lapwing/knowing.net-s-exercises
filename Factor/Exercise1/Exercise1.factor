@@ -1,7 +1,7 @@
 ! Copyright (C) 2018 Your name.
 ! See http://factorcode.org/license.txt for BSD license.
 USING: command-line namespaces sequences kernel math math.functions math.statistics math.parser io combinators ;
-IN: knowing.Factor.Exercise1
+IN: Exercise1
 
 : error-msg ( -- ) "Invalid input; try again." print ;
 
