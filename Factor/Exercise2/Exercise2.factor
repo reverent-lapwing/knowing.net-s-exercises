@@ -24,14 +24,13 @@ ERROR: internal-error x ;
 ;
 
 : split-by ( seq n -- seq_seq )
-    over length 0 =
+    over length over <
     [ 2drop { } ]
-    [ [ head ]
-      [ [ tail { } 1sequence ]
+    [ [ head { } 1sequence ]
+      [ [ tail ]
         [ split-by ] bi
-        prefix
+        append
       ] 2bi
-      
     ] if
 ;
 
