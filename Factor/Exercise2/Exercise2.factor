@@ -18,7 +18,7 @@ ERROR: internal-error x ;
 ;
 
 : dev ( seq -- n )
-    [ avg '[ _ - ] ]
+    [ avg '[ _ - abs ] ]
     [ swap map ] bi
     avg
 ;
