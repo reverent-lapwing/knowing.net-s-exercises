@@ -33,5 +33,9 @@ IN: Exercise2.tests
 
 [ { 6+1/2 1+1/2 } ] [ { 8 5 } haar-seq-step ] unit-test
 [ { 6+1/2 5 1+1/2 2 } ] [ { 8 5 7 3 } haar-seq-step ] unit-test
-[ { 1 2 3 4 5 } haar-seq-step ] must-fail
-[ { } haar-seq-step ] must-fail
+
+[ { 6+1/2 1+1/2 } ] [ { 8 5 } haar-seq ] unit-test
+[ { 5+3/4 1+3/4 3/4 -1/4 } ] [ { 8 5 7 3 } haar-seq ] unit-test
+[ { 1 2 3 4 5 } haar-seq ] must-fail
+[ { } haar-seq ] must-fail
+
