@@ -1,46 +1,56 @@
 ! Copyright (C) 2018 Your name.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: kernel math.order math.functions math sequences combinators io fry command-line namespaces typed ;
+USING: kernel math.order math.functions math sequences combinators io fry command-line namespaces typed make ;
 IN: Exercise2
 
 ERROR: invalid-input x ;
 ERROR: internal-error x ;
 
-: even-check ( n -- n ) dup length 2 mod 0 = [ "Array legth must be even!" invalid-input ] unless ;
-: empty-check ( seq -- seq ) dup length 0 > [ "Input array cannot be empty!" invalid-input ] unless ;
+: even-check ( n -- ) length 2 mod 0 = [ "Array length must be even!" invalid-input ] unless ;
+: empty-check ( seq -- ) length 0 > [ "Input array cannot be empty!" invalid-input ] unless ;
 
-: rational-assert ( n -- n ) dup rational? [ "All numbers must be rational!" internal-error ] unless ;  
+: rational-check ( n -- ) rational? [ "All numbers must be rational!" internal-error ] unless ;  
+: rational-check-seq ( seq -- ) [ rational-check ] each ;
 
-: avg ( seq n -- n )
-    [ head ]
-    [ [ [ rational-assert ] map sum ]
-        [ / ] bi*
-    ] bi ;
+: avg ( seq -- n )
+    dup rational-check-seq
+    [ sum ] [ length ] bi /
+;
 
-: dev ( seq n -- n ) 
-    [ avg ] [ drop first ] 2bi - abs ;
+: dev ( seq -- n )
+    [ avg '[ _ - ] ]
+    [ swap map ] bi
+    avg
+;
 
-: bin-seq ( seq quot: ( seq -- n ) -- seq ) 
-    over length 2 <
+: split-by ( seq n -- seq_seq )
+    over length 0 =
     [ 2drop { } ]
-    [ [ [ 2 tail ] dip bin-seq ] [ call( seq -- n ) ] 2bi prefix ]
-    if ; 
+    [ [ head ]
+      [ [ tail { } 1sequence ]
+        [ split-by ] bi
+        prefix
+      ] 2bi
+      
+    ] if
+;
 
-: avg-seq ( seq -- seq ) [ 2 avg ] bin-seq ;
-: dev-seq ( seq -- seq ) [ 2 dev ] bin-seq ;
+: avg-seq ( seq -- seq ) 2 split-by [ avg ] map ;
+: dev-seq ( seq -- seq ) 2 split-by [ dev ] map ;
 
 : haar-seq-step ( seq -- seq ) 
-    even-check
-    empty-check 
+    dup even-check
+    dup empty-check
     [ avg-seq ] [ dev-seq ] bi
     append ;
 
 : haar-seq? ( seq -- ? )
-    [ first ] [ length ] [ swap avg ] tri = ;
+    [ first ] [ avg ] bi =
+;
 
 : haar-seq ( seq -- seq ) 
 ;
 
-: main ( -- ) command-line get drop ; ! haar-seq drop ; 
+: main ( -- ) command-line get drop ; ! haar-seq drop ;
 
 MAIN: main
