@@ -1,10 +1,10 @@
 ! Copyright (C) 2018 Your name.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: kernel math.order math.functions math sequences combinators io fry command-line namespaces typed continuations debugger ;
+USING: accessors kernel math.order math.functions math.parser math sequences combinators io fry command-line namespaces typed continuations debugger ;
 IN: Exercise2
 
-ERROR: invalid-input x ;
-ERROR: internal-error x ;
+ERROR: invalid-input err-msg ;
+ERROR: internal-error err-msg ;
 
 : even-check ( seq -- ) length 2 mod 0 = [ "Array length must be even!" invalid-input ] unless ;
 : empty-check ( seq -- ) length 0 > [ "Input array cannot be empty!" invalid-input ] unless ;
@@ -51,15 +51,41 @@ ERROR: internal-error x ;
     nip
 ;
 
-: main ( -- ) [
-    command-line get
-    { [ even-check ]
+: strings>numbers ( strings -- numbers )
+    [ string>number ] map
+;
+
+: handle-error ( error -- )
+    { { [ dup invalid-input? ] [ err-msg>> print ] }
+      { [ dup internal-error? ]
+        [ [ err-msg>> print ]
+          [ throw-continue ] bi
+        ]
+      }
+      [ throw-continue ]
+    } cond
+;
+
+: check-input ( seq -- ? )
+    [ [ even-check ]
       [ empty-check ]
-      [ rational-check-seq ]
-      [ haar-seq ]
-    } cleave
-    [ print ] each ]
-    [ print-error ] recover
+      [ rational-check-seq ] tri
+      t
+    ]
+    [ handle-error
+      drop f
+    ] recover
+;
+
+: main-impl ( seq -- )
+    strings>numbers
+    dup check-input
+    [ haar-seq [ print ] each ]
+    [ drop ] if
+;
+
+: main ( -- )
+    command-line get main-impl
 ;
 
 MAIN: main
