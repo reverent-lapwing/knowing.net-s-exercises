@@ -80,7 +80,7 @@ ERROR: internal-error err-msg ;
 : main-impl ( seq -- )
     strings>numbers
     dup check-input
-    [ haar-seq [ print ] each ]
+    [ haar-seq [ number>string print ] each ]
     [ drop ] if
 ;
 
